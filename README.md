@@ -1,2 +1,1 @@
-# edcrub.github.io
-ed_crub
+#Strudel Pattern
