@@ -1,1 +1,1 @@
-#Strudel Pattern
+Strudel Pattern
