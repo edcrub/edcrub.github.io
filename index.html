@@ -6,22 +6,21 @@ layout: null
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
 <title>ed_crub</title>
 <link rel="icon" href="logo.png">
 <style>
-:root{--bg:#f4f6f5;--sf:#fff;--fg:#17201d;--mut:#5b6a64;--ac:#0b7a5c;--ln:#d8e0dc;color-scheme:light dark}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1513;--sf:#16201d;--fg:#e6efeb;--mut:#8fa49b;--ac:#6fe0b8;--ln:#243630}}
+:root{color-scheme:light}
 *{box-sizing:border-box}
 html,body{min-height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font:16px/1.5 "Noto Sans Thai","Sarabun",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top,0)) 16px max(24px,env(safe-area-inset-bottom,0))}
+body{background:#fff;color:#000;font:16px/1.5 "Noto Sans Thai","Sarabun",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top,0)) 16px max(24px,env(safe-area-inset-bottom,0))}
 img{width:96px;height:96px;border-radius:50%;display:block}
-h1{margin:16px 0 28px;font:600 1.7rem/1.2 "Noto Serif Thai","Sarabun",Georgia,serif}
-nav{display:flex;flex-direction:column;gap:10px;width:100%;max-width:380px}
-a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 18px;border:1px solid var(--ln);border-radius:14px;background:var(--sf);color:var(--fg);text-decoration:none}
-a span{color:var(--mut)}
-a:hover{border-color:var(--ac)}
-a:hover span{color:var(--ac)}
-a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+h1{margin:16px 0 28px;font:800 1.7rem/1.2 "Noto Serif Thai","Sarabun",Georgia,serif}
+nav{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;max-width:720px}
+a{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:#000;color:#fff;text-decoration:none;white-space:nowrap}
+a span{color:#bbb}
+a:hover{background:#333}
+a:focus-visible{outline:3px solid #000;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -29,9 +28,9 @@ a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 <h1>ed_crub</h1>
 <nav>
   <a href="https://www.f0nt.com/by/ed_crub/" target="_blank" rel="noopener">ed_font <span>↗</span></a>
-  <a href="strudel/">strudel patterns <span>→</span></a>
+  <a href="strudel/">strudel <span>→</span></a>
   <a href="https://openprocessing.org/@ed_crub#sketches" target="_blank" rel="noopener">openprocessing <span>↗</span></a>
-  <a href="classical/">ฟังรายการเพลงคลาสสิค <span>→</span></a>
+  <a href="classical/">ดนตรีคลาสสิค <span>→</span></a>
 </nav>
 </body>
 </html>
