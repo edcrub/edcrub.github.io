@@ -6,25 +6,32 @@ layout: null
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>edcrub</title>
+<title>ed_crub</title>
+<link rel="icon" href="logo.png">
 <style>
-:root{--bg:#f4f6f5;--fg:#17201d;color-scheme:light dark}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1513;--fg:#e6efeb}}
+:root{--bg:#f4f6f5;--sf:#fff;--fg:#17201d;--mut:#5b6a64;--ac:#0b7a5c;--ln:#d8e0dc;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1513;--sf:#16201d;--fg:#e6efeb;--mut:#8fa49b;--ac:#6fe0b8;--ln:#243630}}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font:16px/1.5 "Noto Sans Thai","Sarabun",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0)) 16px max(16px,env(safe-area-inset-bottom,0))}
-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;width:100%;max-width:640px}
-a{display:flex;flex-direction:column;justify-content:flex-end;min-height:160px;padding:20px;border-radius:16px;color:#fff;text-decoration:none;background:hsl(var(--h) 42% 30%)}
-a:hover{filter:brightness(1.15)}
-a:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
-b{font:600 1.35rem/1.3 "Noto Serif Thai","Sarabun",Georgia,serif}
-small{margin-top:4px;opacity:.8}
+html,body{min-height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 "Noto Sans Thai","Sarabun",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top,0)) 16px max(24px,env(safe-area-inset-bottom,0))}
+img{width:96px;height:96px;border-radius:50%;display:block}
+h1{margin:16px 0 28px;font:600 1.7rem/1.2 "Noto Serif Thai","Sarabun",Georgia,serif}
+nav{display:flex;flex-direction:column;gap:10px;width:100%;max-width:380px}
+a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 18px;border:1px solid var(--ln);border-radius:14px;background:var(--sf);color:var(--fg);text-decoration:none}
+a span{color:var(--mut)}
+a:hover{border-color:var(--ac)}
+a:hover span{color:var(--ac)}
+a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 </style>
 </head>
 <body>
+<img src="logo.png" alt="โลโก้ ed_crub" width="96" height="96" onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/284613?s=400&amp;v=4'">
+<h1>ed_crub</h1>
 <nav>
-  <a href="classical/" style="--h:250"><b>ฟังรายการ</b><small>ดนตรีคลาสสิก ย้อนหลัง</small></a>
-  <a href="strudel/" style="--h:160"><b>แพตเทิร์น Strudel</b><small>เปิดเล่นใน strudel.cc</small></a>
+  <a href="https://www.f0nt.com/by/ed_crub/" target="_blank" rel="noopener">ed_font <span>↗</span></a>
+  <a href="strudel/">strudel patterns <span>→</span></a>
+  <a href="https://openprocessing.org/@ed_crub#sketches" target="_blank" rel="noopener">openprocessing <span>↗</span></a>
+  <a href="classical/">ฟังรายการเพลงคลาสสิค <span>→</span></a>
 </nav>
 </body>
 </html>
