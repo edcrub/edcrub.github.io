@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1722">
+<title>ดนตรีคลาสสิก ฟังย้อนหลัง</title>
+<style>
+:root{--bg:#f2f5f8;--sf:#fff;--fg:#14202e;--mut:#5d6b7e;--ac:#16755f;--acfg:#fff;--ln:#d9e0e8;--bad:#b3402f;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1722;--sf:#172233;--fg:#e9edf3;--mut:#8e9bb0;--ac:#7fd1b9;--acfg:#0b1a16;--ln:#25344a;--bad:#e58a7a}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 "Noto Sans Thai","Sarabun",system-ui,sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px 10px}
+h1{margin:0;font:600 1.35rem/1.3 "Noto Serif Thai","Sarabun",Georgia,serif}
+header small{display:block;color:var(--mut);font-size:.82rem}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.ic{padding:8px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--sf)}
+#list{flex:1;overflow-y:auto;margin:0;padding:0 12px 12px;list-style:none}
+#list li{margin:0}
+.ep{display:flex;width:100%;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:12px 10px;border-bottom:1px solid var(--ln)}
+.ep span:last-child{font-size:.82rem;color:var(--mut);white-space:nowrap}
+.ep.on{background:var(--sf);border-radius:10px;border-bottom-color:transparent;box-shadow:inset 3px 0 0 var(--ac)}
+.ep.on span:first-child{font-weight:600}
+.ep.bad span:first-child{color:var(--mut);text-decoration:line-through}
+.ep.bad span:last-child{color:var(--bad)}
+.empty{padding:28px 18px;color:var(--mut)}
+#pl{background:var(--sf);border-top:1px solid var(--ln);padding:12px 18px calc(14px + env(safe-area-inset-bottom,0))}
+#now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#st{min-height:1.3em;font-size:.82rem;color:var(--mut)}
+#st.err{color:var(--bad)}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.bar output{font-variant-numeric:tabular-nums;font-size:.82rem;color:var(--mut);min-width:3.6em}
+.bar output:last-child{text-align:right}
+input[type=range]{flex:1;accent-color:var(--ac);height:28px}
+.ctl{display:flex;align-items:center;justify-content:space-between}
+.ctl button{padding:10px 12px;border-radius:12px;min-width:48px;min-height:48px}
+#pp{background:var(--ac);color:var(--acfg);border-radius:50%;width:64px;height:64px;font-size:1.5rem;padding:0}
+dialog{width:min(92vw,420px);border:1px solid var(--ln);border-radius:14px;background:var(--sf);color:var(--fg);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;margin:10px 0 4px;font-size:.88rem;color:var(--mut)}
+input,select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--fg)}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.row button{padding:9px 16px;border-radius:10px;border:1px solid var(--ln)}
+.row button.pri{background:var(--ac);color:var(--acfg);border-color:var(--ac)}
+</style>
+</head>
+<body>
+<header>
+  <div><h1 id="ttl">ดนตรีคลาสสิก</h1><small id="sub"></small></div>
+  <button class="ic" id="gear" aria-label="ตั้งค่า">ตั้งค่า</button>
+</header>
+<ul id="list"></ul>
+<section id="pl" aria-label="ตัวเล่นเพลง">
+  <div id="now">ยังไม่ได้เลือกตอน</div>
+  <div id="st" role="status"></div>
+  <div class="bar"><output id="tc">0:00</output><input id="seek" type="range" min="0" max="0" step="1" value="0" aria-label="ตำแหน่งเสียง"><output id="td">0:00</output></div>
+  <div class="ctl">
+    <button id="prev" aria-label="ตอนก่อนหน้า">ก่อนหน้า</button>
+    <button id="b15" aria-label="ย้อนกลับ 15 วินาที">-15</button>
+    <button id="pp" aria-label="เล่น">▶</button>
+    <button id="f15" aria-label="ข้ามไป 15 วินาที">+15</button>
+    <button id="next" aria-label="ตอนถัดไป">ถัดไป</button>
+  </div>
+  <div class="ctl"><button id="spd" aria-label="ความเร็ว">ความเร็ว 1x</button></div>
+</section>
+<audio id="au" preload="auto"></audio>
+
+<dialog id="dlg">
+  <form method="dialog" id="frm">
+    <label for="fn">ชื่อรายการ</label><input id="fn" type="text">
+    <label for="fd">ออกอากาศวัน</label>
+    <select id="fd"><option value="0">อาทิตย์</option><option value="1">จันทร์</option><option value="2">อังคาร</option><option value="3">พุธ</option><option value="4">พฤหัสบดี</option><option value="5">ศุกร์</option><option value="6">เสาร์</option></select>
+    <label for="ft">เวลาเริ่มออกอากาศ</label><input id="ft" type="time" required>
+    <label for="fs">ตอนแรกที่ต้องการ (วันที่)</label><input id="fs" type="date" required>
+    <label for="fo">เรียงตอน</label>
+    <select id="fo"><option value="desc">ใหม่ไปเก่า</option><option value="asc">เก่าไปใหม่</option></select>
+    <div class="row"><button type="button" id="cx">ยกเลิก</button><button type="submit" class="pri" id="sv" value="ok">บันทึก</button></div>
+  </form>
+</dialog>
+
+<script>
+(function(){
+var BASE='https://radiolive.car.chula.ac.th/radio_on_demand';
+var LAG=2*3600*1000;            // a recording is listed 2 hours after the start time
+var DEF={name:'ดนตรีคลาสสิก',dow:6,time:'16:00',start:'2026-01-03',order:'desc'};
+var $=function(s){return document.querySelector(s)};
+var au=$('#au');
+function get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var cfg=Object.assign({},DEF,get('cfg')||{});
+var pos=get('pos')||{}, done=get('done')||{}, av=get('av')||{}, chk=0, RECHECK=6*3600*1000;
+var eps=[], cur=-1, fails=0, pend=0, lastSave=0, speeds=[1,1.25,1.5,2], si=Math.max(0,speeds.indexOf(get('spd')||1));
+function pad(n){return String(n).padStart(2,'0')}
+function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':'+pad(m):m)+':'+pad(s%60)}
+function label(e){return new Date(e.air).toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Bangkok'})}
+function status(t,err){var s=$('#st');s.textContent=t||'';s.className=err?'err':''}
+
+function build(){
+  var p=cfg.start.split('-').map(Number), tm=cfg.time.split(':').map(Number), t=Date.UTC(p[0],p[1]-1,p[2]), out=[];
+  while(new Date(t).getUTCDay()!==Number(cfg.dow))t+=864e5;
+  for(var n=0;n<2000;n++,t+=7*864e5){
+    var c=new Date(t),Y=c.getUTCFullYear(),M=c.getUTCMonth()+1,D=c.getUTCDate();
+    var air=Date.UTC(Y,M-1,D,tm[0],tm[1])-7*36e5;     // Bangkok time = UTC+7
+    if(air+LAG>Date.now())break;
+    var f='TR'+Y+pad(M)+pad(D)+'-'+pad(tm[0])+pad(tm[1])+'00.mp3';
+    var a=BASE+'/'+Y+'/'+M+'/'+D+'/'+f, b=BASE+'/'+Y+'/'+pad(M)+'/'+pad(D)+'/'+f;
+    out.push({id:Y+'-'+pad(M)+'-'+pad(D),air:air,urls:a===b?[a]:[a,b],tryN:0,bad:false});
+  }
+  if(cfg.order==='desc')out.reverse();
+  return out;
+}
+
+function render(){
+  var ul=$('#list');ul.textContent='';
+  $('#ttl').textContent=cfg.name;
+  var vis=eps.filter(function(e){return !e.bad}).length;
+  $('#sub').textContent=eps.length?vis+' ตอน'+(chk?' · กำลังตรวจไฟล์ อีก '+chk:''):'';
+  if(!vis){var li0=document.createElement('li');li0.className='empty';li0.textContent=chk?'กำลังตรวจสอบไฟล์ รอสักครู่':'ยังไม่พบไฟล์ในช่วงที่เลือก ลองปรับวันที่เริ่มในตั้งค่า';ul.appendChild(li0);return}
+  eps.forEach(function(e,i){
+    if(e.bad)return;
+    var li=document.createElement('li'),b=document.createElement('button');
+    b.className='ep'+(i===cur?' on':'')+(e.bad?' bad':'');
+    var a=document.createElement('span'),z=document.createElement('span');
+    a.textContent=label(e);
+    z.textContent=e.bad?'ไม่พบไฟล์':i===cur?'กำลังเลือก':done[e.id]?'ฟังแล้ว':pos[e.id]>30?'ค้างที่ '+fmt(pos[e.id]):'';
+    b.appendChild(a);b.appendChild(z);
+    b.onclick=function(){load(i,pos[e.id]||0,true)};
+    li.appendChild(b);ul.appendChild(li);
+  });
+}
+
+function meta(){
+  var e=eps[cur];$('#now').textContent=e?label(e):'ยังไม่ได้เลือกตอน';
+  if(!e||!('mediaSession' in navigator))return;
+  try{navigator.mediaSession.metadata=new MediaMetadata({title:label(e),artist:cfg.name,album:'Chula Radio Plus'})}catch(x){}
+}
+
+function load(i,seek,play){
+  if(i<0||i>=eps.length)return;
+  cur=i;var e=eps[i];e.tryN=e.tryN||0;pend=seek||0;
+  au.src=e.urls[e.tryN];au.playbackRate=speeds[si];
+  set('last',e.id);status('');meta();render();
+  if(play)au.play().catch(function(){status('กดปุ่มเล่นเพื่อเริ่มฟัง')});
+  var on=document.querySelector('.ep.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function step(d,play){
+  var i=cur+d;
+  while(i>=0&&i<eps.length&&eps[i].bad)i+=d;
+  if(i<0||i>=eps.length){au.pause();status('ไม่มีตอนต่อไปแล้ว');return}
+  load(i,pos[eps[i].id]||0,play);
+}
+
+au.addEventListener('loadedmetadata',function(){if(pend){try{au.currentTime=pend}catch(x){}pend=0}$('#seek').max=Math.floor(au.duration)||0;$('#td').textContent=fmt(au.duration)});
+au.addEventListener('playing',function(){fails=0;var pe=eps[cur];if(pe){av[pe.id]={ok:1,u:pe.tryN||0};pe.ok=true;set('av',av)}status('');$('#pp').textContent='❚❚';$('#pp').setAttribute('aria-label','หยุดชั่วคราว')});
+au.addEventListener('pause',function(){$('#pp').textContent='▶';$('#pp').setAttribute('aria-label','เล่น')});
+au.addEventListener('timeupdate',function(){
+  var e=eps[cur];if(!e)return;
+  $('#seek').value=Math.floor(au.currentTime);$('#tc').textContent=fmt(au.currentTime);
+  var n=Date.now();
+  if(n-lastSave>5000&&au.currentTime>1){
+    lastSave=n;pos[e.id]=Math.floor(au.currentTime);set('pos',pos);
+    if('mediaSession' in navigator&&isFinite(au.duration)){try{navigator.mediaSession.setPositionState({duration:au.duration,position:Math.min(au.currentTime,au.duration),playbackRate:au.playbackRate})}catch(x){}}
+  }
+});
+au.addEventListener('ended',function(){var e=eps[cur];if(e){done[e.id]=1;delete pos[e.id];set('done',done);set('pos',pos)}step(1,true)});
+au.addEventListener('error',function(){
+  var e=eps[cur];if(!e||!au.getAttribute('src'))return;
+  if(e.tryN<e.urls.length-1){e.tryN++;au.src=e.urls[e.tryN];au.play().catch(function(){});return}
+  e.bad=true;av[e.id]={ok:0,t:Date.now()};set('av',av);fails++;render();
+  if(fails>=5){status('เล่นไม่ได้ติดกัน 5 ตอน ตรวจสอบอินเทอร์เน็ต หรือวันที่เริ่มในตั้งค่า',true);return}
+  status('ไม่พบไฟล์ของตอนนี้ ข้ามไปตอนถัดไป',true);step(1,true);
+});
+
+$('#pp').onclick=function(){if(cur<0&&eps.length)load(0,pos[eps[0].id]||0,true);else if(au.paused)au.play().catch(function(){});else au.pause()};
+$('#next').onclick=function(){step(1,!au.paused)};
+$('#prev').onclick=function(){if(au.currentTime>5)au.currentTime=0;else step(-1,!au.paused)};
+$('#b15').onclick=function(){au.currentTime=Math.max(0,au.currentTime-15)};
+$('#f15').onclick=function(){au.currentTime=Math.min(au.duration||1e9,au.currentTime+15)};
+$('#seek').oninput=function(){au.currentTime=Number(this.value)};
+$('#spd').onclick=function(){si=(si+1)%speeds.length;au.playbackRate=speeds[si];set('spd',speeds[si]);$('#spd').textContent='ความเร็ว '+speeds[si]+'x'};
+$('#spd').textContent='ความเร็ว '+speeds[si]+'x';
+
+if('mediaSession' in navigator){
+  var ms=navigator.mediaSession;
+  var H={play:function(){au.play()},pause:function(){au.pause()},previoustrack:function(){$('#prev').click()},nexttrack:function(){$('#next').click()},
+    seekbackward:function(){$('#b15').click()},seekforward:function(){$('#f15').click()},
+    seekto:function(d){if(d&&typeof d.seekTime==='number')au.currentTime=d.seekTime}};
+  Object.keys(H).forEach(function(k){try{ms.setActionHandler(k,H[k])}catch(x){}});
+}
+
+var dlg=$('#dlg');
+$('#gear').onclick=function(){$('#fn').value=cfg.name;$('#fd').value=cfg.dow;$('#ft').value=cfg.time;$('#fs').value=cfg.start;$('#fo').value=cfg.order;dlg.showModal()};
+$('#cx').onclick=function(){dlg.close()};
+$('#frm').onsubmit=function(){
+  cfg={name:$('#fn').value.trim()||DEF.name,dow:Number($('#fd').value),time:$('#ft').value||DEF.time,start:$('#fs').value||DEF.start,order:$('#fo').value};
+  set('cfg',cfg);var keep=eps[cur]&&eps[cur].id;eps=build();applyCache();cur=-1;
+  var i=eps.findIndex(function(e){return e.id===keep});if(i>=0)cur=i;
+  render();meta();scan();
+};
+
+function applyCache(){
+  eps.forEach(function(e){
+    var c=av[e.id];if(!c)return;
+    if(c.ok){e.tryN=c.u||0;e.ok=true;e.bad=false}
+    else if(Date.now()-c.t<RECHECK){e.bad=true}
+  });
+}
+function probe(e,cb){
+  var a=new Audio(),i=0,fin=false,tm;a.preload='metadata';
+  function end(r){if(fin)return;fin=true;clearTimeout(tm);a.onloadedmetadata=a.onerror=null;a.removeAttribute('src');try{a.load()}catch(x){}cb(r)}
+  function nxt(){if(i>=e.urls.length)return end(0);a.src=e.urls[i++]}
+  a.onloadedmetadata=function(){e.tryN=i-1;end(1)};
+  a.onerror=nxt;
+  tm=setTimeout(function(){end(-1)},20000);
+  nxt();
+}
+function scan(){
+  var q=eps.filter(function(e){return !e.ok&&!e.bad}),total=q.length,n=0,active=0,k=0;
+  if(!total){chk=0;return}
+  chk=total;
+  function pump(){
+    while(active<4&&k<q.length){
+      (function(e){
+        active++;
+        probe(e,function(r){
+          active--;n++;chk=total-n;
+          if(r===1){e.ok=true;av[e.id]={ok:1,u:e.tryN}}
+          else if(r===0){e.bad=true;av[e.id]={ok:0,t:Date.now()}}
+          set('av',av);render();pump();
+        });
+      })(q[k++]);
+    }
+    if(k>=q.length&&!active){chk=0;render()}
+  }
+  pump();
+}
+eps=build();applyCache();render();
+var last=get('last'),li=eps.findIndex(function(e){return e.id===last&&!e.bad});
+if(li<0)li=eps.findIndex(function(e){return !e.bad});
+if(li>=0)load(li,pos[eps[li].id]||0,false);
+scan();
+})();
+</script>
+</body>
+</html>
