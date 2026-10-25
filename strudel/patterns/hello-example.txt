@@ -1,7 +1,0 @@
-// hello example
-setcps(.5)
-
-stack(
-  s("bd*2, ~ sd, hh*4").bank("RolandTR909"),
-  note("c2 [eb2 g2]").s("sawtooth").lpf(600)
-)
