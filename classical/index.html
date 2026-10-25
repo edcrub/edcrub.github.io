@@ -63,7 +63,7 @@ input,select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--ln)
     <button id="f15" aria-label="ข้ามไป 15 วินาที">+15</button>
     <button id="next" aria-label="ตอนถัดไป">ถัดไป</button>
   </div>
-  <div class="ctl"><button id="spd" aria-label="ความเร็ว">ความเร็ว 1x</button></div>
+  <div class="ctl"><button id="spd" aria-label="ความเร็ว">ความเร็ว 1x</button><button id="slp" aria-pressed="false">หยุดเมื่อจบตอน: ปิด</button></div>
 </section>
 <audio id="au" preload="auto"></audio>
 
@@ -90,7 +90,7 @@ var au=$('#au');
 function get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
 function set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 var cfg=Object.assign({},DEF,get('cfg')||{});
-var pos=get('pos')||{}, done=get('done')||{}, av=get('av')||{}, chk=0, RECHECK=6*3600*1000;
+var pos=get('pos')||{}, done=get('done')||{}, av=get('av')||{}, sleepEnd=!!get('slp'), chk=0, RECHECK=6*3600*1000;
 var eps=[], cur=-1, fails=0, pend=0, lastSave=0, speeds=[1,1.25,1.5,2], si=Math.max(0,speeds.indexOf(get('spd')||1));
 function pad(n){return String(n).padStart(2,'0')}
 function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':'+pad(m):m)+':'+pad(s%60)}
@@ -164,7 +164,9 @@ au.addEventListener('timeupdate',function(){
     if('mediaSession' in navigator&&isFinite(au.duration)){try{navigator.mediaSession.setPositionState({duration:au.duration,position:Math.min(au.currentTime,au.duration),playbackRate:au.playbackRate})}catch(x){}}
   }
 });
-au.addEventListener('ended',function(){var e=eps[cur];if(e){done[e.id]=1;delete pos[e.id];set('done',done);set('pos',pos)}step(1,true)});
+au.addEventListener('ended',function(){var e=eps[cur];if(e){done[e.id]=1;delete pos[e.id];set('done',done);set('pos',pos)}
+  if(sleepEnd){step(1,false);status('หยุดแล้วเมื่อจบตอน กดเล่นเพื่อฟังตอนถัดไป');return}
+  step(1,true)});
 au.addEventListener('error',function(){
   var e=eps[cur];if(!e||!au.getAttribute('src'))return;
   if(e.tryN<e.urls.length-1){e.tryN++;au.src=e.urls[e.tryN];au.play().catch(function(){});return}
@@ -181,6 +183,9 @@ $('#f15').onclick=function(){au.currentTime=Math.min(au.duration||1e9,au.current
 $('#seek').oninput=function(){au.currentTime=Number(this.value)};
 $('#spd').onclick=function(){si=(si+1)%speeds.length;au.playbackRate=speeds[si];set('spd',speeds[si]);$('#spd').textContent='ความเร็ว '+speeds[si]+'x'};
 $('#spd').textContent='ความเร็ว '+speeds[si]+'x';
+function slpUi(){var b=$('#slp');b.textContent='หยุดเมื่อจบตอน: '+(sleepEnd?'เปิด':'ปิด');b.setAttribute('aria-pressed',sleepEnd?'true':'false');b.style.background=sleepEnd?'var(--ac)':'none';b.style.color=sleepEnd?'var(--acfg)':'inherit'}
+$('#slp').onclick=function(){sleepEnd=!sleepEnd;set('slp',sleepEnd?1:0);slpUi()};
+slpUi();
 
 if('mediaSession' in navigator){
   var ms=navigator.mediaSession;
