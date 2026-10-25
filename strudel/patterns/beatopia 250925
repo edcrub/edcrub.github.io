@@ -1,0 +1,20 @@
+// @title beatopia 250925 @by ed_crub
+
+setcpm(60/4)
+
+_drum : s("sbd!8") 
+  ._punchcard({width:600})
+_bass :n(irand(12).seg(16)).scale("a1:minor")
+  .s("supersaw")
+  .lpf(slider(640,300,2000,10))
+  // .delay(.73,1/16,.2)
+  .duckorbit(2).duckattack(0.12).duckdepth(1)
+._punchcard({width:1440})
+subbass :n("0@5 4@1 6@2").scale("a3:minor")
+  .struct("x*8")
+  .s("z_sawtooth").lpf(200)
+  .delay(.5,1/3,.5)
+  .orbit(2)
+  // .room(.7,1).rlp(5000).rdim(400).rfade(.5)
+
+.punchcard({width:1440})

@@ -1,0 +1,16 @@
+// @title beatopia dub 250721 @by ed_crub
+
+setcpm(80/4)
+const dbank = 'linndrum'
+
+
+$ :s("hh(11,16)").almostNever(ply("2 | 4")).gain(sine)._punchcard({width:2048})
+
+$ :s("sd").bank(dbank).beat("4,9,12", 16)
+  // .almostNever(ply("4"))
+  // .sometimes(x=>x.speed("4"))
+  .delay(.15,1/3,.2)._punchcard({width : 2048})
+$ : s("bd(7,16)").bank(dbank)._punchcard({width : 1024})
+$: s("rim(5,8)").lpf(sine.range(1000,4000).slow(8)).bank(dbank).punchcard()
+
+all(x => x.room(".29:1"))

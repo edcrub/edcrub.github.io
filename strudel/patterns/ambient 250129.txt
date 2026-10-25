@@ -1,0 +1,42 @@
+setcpm(60/4)
+samples({
+  frog : 'bbc/bbc_common-frog.mp3',
+  owl : 'bbc/bbc_common-frog.mp3'
+}, 'github:edcrub/samp/main');
+
+let pad =  n("[0,2,4,7] [3,5,7,<9 [13 12] 11>] [-7,4,6,8] [0,2,4,11]").scale("C2:major").s("gm_pad_warm:3")
+  .slow(8)
+  .att(.5).rel(2).room(".5:4")
+.hush()
+
+
+x1 : stack(
+  arrange([16,pad]),
+  // arrange([16,pad]).add("28").lpf(1500).lpq(30).fast(8).rel(sine.range(.5,2).slow(8)).gain(sine.range(.25,.75).slow(8))
+)
+  .color('salmon').pianoroll({labels:0, vertical :1})
+
+  
+//beat
+  x2 : stack(
+    s("rim(3,12)").bank("LinnDrum").dec(.003).slow(2).lpf(400).lpq(30)
+    .delay(rand.range(.25,.5)).dt(rand.range(.125,.5)).dfb(rand.range(.5,1))
+    .hush()
+    ,
+    s("hh(16,16)").hpf(15000).hpq(40).velocity("[0.5 1]*4").delay(".125:.125:.5")
+    .fast(rand.range(.125,4))
+    // .hush()
+  ).room(".8:3")._scope()
+
+
+//ambient
+  x3 : s("frog , owl").chop(16).loopAt(1/4).rel(.9).lpf(1000).lpq(10).delay(".51:.5:.25").room(".5:4").gain(.2).slow(16)
+   // .hush()
+._scope()
+
+
+//bass
+  x4 : n("0 4 ").scale("C2:major").s("supersaw").dec(4).lpf(500).slow(8)
+   .hush()
+   ._spiral({steady: 1})
+  

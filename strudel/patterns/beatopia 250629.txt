@@ -1,0 +1,8 @@
+//@title beatopia 250629 @by ed_crub
+const dbank = "linndrum"
+setCpm(80/4)
+$: s("hh(14,16)").decay(sine.fast(4).range(0.05,.14)).gain(.4).sometimesBy(.1, x => x.ply("2 | 4")).punchcard()
+
+$: s("bd!16?".degradeBy(slider(0.297,0,1)).ribbon(40,2)).n(irand(5).ribbon(200,2)).bank(dbank) .color('salmon')._punchcard()
+$: s("sd").bank(dbank).beat("4,11", 16).color('pink')._punchcard()
+_$: s("perc:4!16?".degradeBy(slider(0.205,0,1)).ribbon(19,2)).bank(dbank).gain(.5)._punchcard()

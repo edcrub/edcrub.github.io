@@ -1,0 +1,6 @@
+setcpm(240/4)
+stack(
+  n("3 4 3 2").sound("jazz(8,8)").pan(0).color("pink"),
+  // n("0 1 [4 3] 2").sound("jazz(8,8)").pan(1).color("salmon")
+  //.rev()
+).scope()

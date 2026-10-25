@@ -1,0 +1,30 @@
+//@title ambient 251003 @by ed_crub
+
+await initHydra()
+bpm=60
+shape(4)
+  .rotate(1, 0.5)
+  .scale(2,2)
+  .repeatX(2, 2).modulate(o0, () => mouse.x * 0.0005)
+  .repeatY(2, 2)
+.out()
+
+setcpm(80/4)
+samples({ bird: 'https://sound-effects-media.bbcrewind.co.uk/mp3/NHU05104095.mp3',
+        river: 'https://sound-effects-media.bbcrewind.co.uk/mp3/07044099.mp3'})
+
+bird : s("bird")
+  .slice(8, "5 1 <2 2*2> 3 [4 3] 5 6 4".every(3,rev()))
+  .loopAt(rand.range(2,8).slow(2))
+  .delay(".5,1/16,.6")
+  // .dist("1:.4")
+.room("0.7:2")
+.duckorbit(2).duckatt(0.75).duckdepth(.5)
+
+river: s("river")
+  .slice(8, "3 4 5 2 <4 7> [4 2]".rev())
+  .loopAt(16)
+  .lpf(slider(1180,300,5000,10))
+  .att(.5).rel(.72)
+  .room(".9:2")
+.orbit(2)
