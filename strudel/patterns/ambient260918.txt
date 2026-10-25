@@ -1,0 +1,20 @@
+/* @title ambient260918 @by ed_crub*/
+
+await initHydra()
+solid (0,0,0,.7)
+.out()
+
+setcpm(60/4)
+
+
+amb: n("<[0,4]@8 [4,9,11]@8>").scale("A:minor")
+  .layer(
+    x => x.s("wt_digital:1"),
+    x => x.s("supersaw")
+      .cutoff(sine.range(300,1000).fast(64)).gain(sine.range(0.1,.125).slow(4))
+  )
+  .att(4).rel(4)
+  .lpf(sine.range(200,500)).lpq(sine.range(10,90).fast(8))
+  .ctf(sine.range(100,10000).fast(16))
+  .room(4)
+._scope({width})
