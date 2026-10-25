@@ -1,0 +1,25 @@
+/* @title remember261019  @by ed_crub */ 
+
+samples({amb1 :'https://sound-effects-media.bbcrewind.co.uk/mp3/07039039.mp3',
+         amb2 :'https://sound-effects-media.bbcrewind.co.uk/mp3/07074232.mp3',
+         amb3 :'https://sound-effects-media.bbcrewind.co.uk/mp3/NHU05014211.mp3'})
+samples ({amb4 : 'voice/Audio 2.mp3'},'github:edcrub/samp/main/')
+
+await initHydra()
+solid(0,0,0,.7)
+.out()
+
+const cpmVal = 60/4
+const sampLen = 25            
+const cycles = 2
+
+cpm(cpmVal)
+
+const cycleSec = 60 / cpmVal  
+const frac = (cycles * cycleSec) / sampLen   
+
+_amb1  : s("amb1").begin(0).end(frac).gain(.125).room(1)
+_amb2  : s("amb2").begin(0).end(frac).delay(3, 1/16,.2).room(2).gain(.12)
+_amb3  : s("amb3").begin(0).end(frac).delay(3, 1/16,.2).room(2).gain(.12)
+amb4  : s("amb4").begin(0).end(frac).echo(2,1/8,.7).bpf(2500).gain(6)
+.scope()
