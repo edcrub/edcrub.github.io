@@ -8,6 +8,10 @@
     {
       "id": "music-education",
       "title": "ดนตรีศึกษา"
+    },
+    {
+      "id": "music-listening",
+      "title": "เพลินเพลง"
     }
   ],
   "programs": [
@@ -34,6 +38,30 @@
       "category": "classical",
       "weekday": 0,
       "time": "060000",
+      "start": "2026-01-03"
+      },
+    {
+      "id": "thai-classical-music-2",
+      "title": "ดนตรีไทยคุณอดุลย์ค่า",
+      "category": "classical",
+      "weekday": 6,
+      "time": "150000",
+      "start": "2026-01-03"
+      },
+    {
+      "id": "luk-thung-music",
+      "title": "ลูกทุ่ง",
+      "category": "music-listening",
+      "weekday": 0,
+      "time": "140000",
+      "start": "2026-01-03"
+      },
+    {
+      "id": "relaxing-night-music",
+      "title": "Relaxing Night Music",
+      "category": "music-listening",
+      "weekday": [0,1,2,3,4,5,6]
+      "time": "140000",
       "start": "2026-01-03"
     }
   ]
