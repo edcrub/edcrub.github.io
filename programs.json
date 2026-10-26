@@ -27,6 +27,14 @@
       "weekday": 0,
       "time": "123000",
       "start": "2026-01-03"
+    },
+    {
+      "id": "thai-classical-music",
+      "title": "จุฬาวาทิต",
+      "category": "classical",
+      "weekday": 0,
+      "time": "060000",
+      "start": "2026-01-03"
     }
   ]
 }
