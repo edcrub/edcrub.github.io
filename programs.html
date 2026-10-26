@@ -29,7 +29,9 @@ fetch("programs.json", {cache:"no-cache"}).then(r => r.json()).then(cfg => {
       const a = document.createElement("a");
       a.href = "player.html?p=" + encodeURIComponent(p.id);
       const t = p.time.slice(0,2) + "." + p.time.slice(2,4) + " น.";
-      a.innerHTML = `${p.title}<small>ทุกวัน${days[p.weekday]} ${t}</small>`;
+      const ws = [].concat(p.weekday);
+      const when = ws.length === 7 ? "ทุกวัน" : "ทุกวัน" + ws.map(w => days[w]).join(" ");
+      a.innerHTML = `${p.title}<small>${when} ${t}</small>`;
       root.appendChild(a);
     });
   });

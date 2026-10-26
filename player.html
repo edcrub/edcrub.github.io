@@ -70,7 +70,7 @@ input,select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--ln)
   <form method="dialog" id="frm">
     <label for="fn">ชื่อรายการ</label><input id="fn" type="text">
     <label for="fd">ออกอากาศวัน</label>
-    <select id="fd"><option value="0">อาทิตย์</option><option value="1">จันทร์</option><option value="2">อังคาร</option><option value="3">พุธ</option><option value="4">พฤหัสบดี</option><option value="5">ศุกร์</option><option value="6">เสาร์</option></select>
+    <select id="fd"><option value="all">ทุกวัน</option><option value="">ตามที่ตั้งไว้ (หลายวัน)</option><option value="0">อาทิตย์</option><option value="1">จันทร์</option><option value="2">อังคาร</option><option value="3">พุธ</option><option value="4">พฤหัสบดี</option><option value="5">ศุกร์</option><option value="6">เสาร์</option></select>
     <label for="ft">เวลาเริ่มออกอากาศ</label><input id="ft" type="time" required>
     <label for="fs">ตอนแรกที่ต้องการ (วันที่)</label><input id="fs" type="date" required>
     <label for="fo">เรียงตอน</label>
@@ -112,9 +112,11 @@ function status(t,err){var s=$('#st');s.textContent=t||'';s.className=err?'err':
 
 function build(){
   var p=cfg.start.split('-').map(Number), tm=cfg.time.split(':').map(Number), t=Date.UTC(p[0],p[1]-1,p[2]), out=[];
-  while(new Date(t).getUTCDay()!==Number(cfg.dow))t+=864e5;
-  for(var n=0;n<2000;n++,t+=7*864e5){
-    var c=new Date(t),Y=c.getUTCFullYear(),M=c.getUTCMonth()+1,D=c.getUTCDate();
+  var ds=[].concat(cfg.dow).map(Number);           // เลขเดียว หรือรายการวัน เช่น [0,1,2,3,4,5,6]
+  for(var n=0;n<4000;n++,t+=864e5){
+    var c=new Date(t);
+    if(ds.indexOf(c.getUTCDay())<0)continue;
+    var Y=c.getUTCFullYear(),M=c.getUTCMonth()+1,D=c.getUTCDate();
     var air=Date.UTC(Y,M-1,D,tm[0],tm[1])-7*36e5;     // Bangkok time = UTC+7
     if(air+LAG>Date.now())break;
     var f='TR'+Y+pad(M)+pad(D)+'-'+pad(tm[0])+pad(tm[1])+'00.mp3';
@@ -209,10 +211,10 @@ if('mediaSession' in navigator){
 }
 
 var dlg=$('#dlg');
-$('#gear').onclick=function(){$('#fn').value=cfg.name;$('#fd').value=cfg.dow;$('#ft').value=cfg.time;$('#fs').value=cfg.start;$('#fo').value=cfg.order;dlg.showModal()};
+$('#gear').onclick=function(){$('#fn').value=cfg.name;var ar=[].concat(cfg.dow);$('#fd').value=ar.length===7?'all':ar.length>1?'':ar[0];$('#ft').value=cfg.time;$('#fs').value=cfg.start;$('#fo').value=cfg.order;dlg.showModal()};
 $('#cx').onclick=function(){dlg.close()};
 $('#frm').onsubmit=function(){
-  cfg={name:$('#fn').value.trim()||DEF.name,dow:Number($('#fd').value),time:$('#ft').value||DEF.time,start:$('#fs').value||DEF.start,order:$('#fo').value};
+  cfg={name:$('#fn').value.trim()||DEF.name,dow:($('#fd').value==='all'?[0,1,2,3,4,5,6]:$('#fd').value===''?cfg.dow:Number($('#fd').value)),time:$('#ft').value||DEF.time,start:$('#fs').value||DEF.start,order:$('#fo').value};
   set('cfg',cfg);var keep=eps[cur]&&eps[cur].id;eps=build();applyCache();cur=-1;
   var i=eps.findIndex(function(e){return e.id===keep});if(i>=0)cur=i;
   render();meta();scan();
