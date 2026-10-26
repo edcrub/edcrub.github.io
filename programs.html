@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>รายการทั้งหมด</title>
+<style>
+  :root{--bg:#fff;--fg:#1c1c1c;--mut:#777;--line:#e3e3e3;--acc:#1a6b5a}
+  @media (prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--mut:#999;--line:#2a2a2a;--acc:#5fcfb4}}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,"Noto Sans Thai",sans-serif;padding:16px;max-width:640px}
+  h1{font-size:1.3rem;margin:0 0 16px}
+  h2{font-size:.85rem;color:var(--mut);margin:24px 0 6px;font-weight:600}
+  a{display:block;padding:14px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;color:var(--fg);text-decoration:none}
+  a small{display:block;color:var(--mut);margin-top:2px}
+</style>
+</head>
+<body>
+<h1>Chula Radio Plus · รายการย้อนหลัง</h1>
+<div id="root">กำลังโหลด…</div>
+<script>
+const days = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
+fetch("programs.json", {cache:"no-cache"}).then(r => r.json()).then(cfg => {
+  const root = document.getElementById("root"); root.innerHTML = "";
+  cfg.categories.forEach(c => {
+    const ps = cfg.programs.filter(p => p.category === c.id);
+    if (!ps.length) return;
+    const h = document.createElement("h2"); h.textContent = c.title; root.appendChild(h);
+    ps.forEach(p => {
+      const a = document.createElement("a");
+      a.href = "player.html?p=" + encodeURIComponent(p.id);
+      const t = p.time.slice(0,2) + "." + p.time.slice(2,4) + " น.";
+      a.innerHTML = `${p.title}<small>ทุกวัน${days[p.weekday]} ${t}</small>`;
+      root.appendChild(a);
+    });
+  });
+}).catch(() => document.getElementById("root").textContent = "โหลด programs.json ไม่ได้");
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "base": "https://radiolive.car.chula.ac.th/radio_on_demand/",
+  "categories": [
+    {
+      "id": "classical",
+      "title": "เพลงคลาสสิก"
+    },
+    {
+      "id": "music-education",
+      "title": "ดนตรีศึกษา"
+    }
+  ],
+  "programs": [
+    {
+      "id": "classical-sat",
+      "title": "ดนตรีคลาสสิก",
+      "category": "classical",
+      "weekday": 6,
+      "time": "160000",
+      "start": "2026-01-03",
+      "legacy": true
+    },
+    {
+      "id": "talk-with-music",
+      "title": "คุยกับดนตรี",
+      "category": "music-education",
+      "weekday": 0,
+      "time": "123000",
+      "start": "2026-01-03"
+    }
+  ]
+}
