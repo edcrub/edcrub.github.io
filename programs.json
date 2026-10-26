@@ -60,7 +60,7 @@
       "id": "relaxing-night-music",
       "title": "Relaxing Night Music",
       "category": "music-listening",
-      "weekday": [0,1,2,3,4,5,6]
+      "weekday": [0,1,2,3,4,5,6],
       "time": "203000",
       "start": "2026-01-03"
     }
